@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حساب معدل التقييم - كلية هندسة وعلوم الحاسب</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            width: 400px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+        }
+        h2 {
+            text-align: center;
+            color: #0073e6;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        button {
+            background-color: #0073e6;
+            color: #fff;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #005bb5;
+        }
+        .results {
+            margin-top: 20px;
+        }
+        .rate {
+            font-size: 18px;
+            margin: 5px 0;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>حساب معدل التقييم (RATE)</h2>
+    <form id="rateForm">
+        <!-- البيانات الأساسية -->
+        <label for="gpa">المعدل التراكمي (GPA):</label>
+        <input type="number" id="gpa" step="0.01" min="0" max="5" required>
+
+        <label for="sa">المعدل الفصلي (SA):</label>
+        <input type="number" id="sa" step="0.01" min="0" max="5" required>
+
+        <!-- درجات المقررات التخصصية -->
+        <label for="logicDesign">التصميم المنطقي:</label>
+        <select id="logicDesign" required>
+            <option value="">اختر الدرجة</option>
+            <option value="5">أ+</option>
+            <option value="4.75">أ</option>
+            <option value="4.5">ب+</option>
+            <option value="4">ب</option>
+            <option value="3.5">ج+</option>
+            <option value="3">ج</option>
+            <option value="2.5">د+</option>
+            <option value="2">د</option>
+            <option value="0">هـ</option>
+        </select>
+
+        <label for="discreteMath">الرياضيات المتقطعة:</label>
+        <select id="discreteMath" required>
+            <option value="">اختر الدرجة</option>
+            <option value="5">أ+</option>
+            <option value="4.75">أ</option>
+            <option value="4.5">ب+</option>
+            <option value="4">ب</option>
+            <option value="3.5">ج+</option>
+            <option value="3">ج</option>
+            <option value="2.5">د+</option>
+            <option value="2">د</option>
+            <option value="0">هـ</option>
+        </select>
+
+        <label for="programming">برمجة الحاسب:</label>
+        <select id="programming" required>
+            <option value="">اختر الدرجة</option>
+            <option value="5">أ+</option>
+            <option value="4.75">أ</option>
+            <option value="4.5">ب+</option>
+            <option value="4">ب</option>
+            <option value="3.5">ج+</option>
+            <option value="3">ج</option>
+            <option value="2.5">د+</option>
+            <option value="2">د</option>
+            <option value="0">هـ</option>
+        </select>
+
+        <button type="button" onclick="calculateRate()">حساب</button>
+    </form>
+
+    <div class="results" id="results"></div>
+</div>
+
+<script>
+    function calculateRate() {
+        const gpa = parseFloat(document.getElementById('gpa').value);
+        const sa = parseFloat(document.getElementById('sa').value);
+        const logicDesign = parseFloat(document.getElementById('logicDesign').value);
+        const discreteMath = parseFloat(document.getElementById('discreteMath').value);
+        const programming = parseFloat(document.getElementById('programming').value);
+
+        // أوزان كل تخصص
+        const weights = {
+            'هندسة الحاسب': { W1: 0.75, W2: 0.25, G1: logicDesign, G2: discreteMath },
+            'علوم الحاسب': { W1: 0.75, W2: 0.25, G1: programming, G2: discreteMath },
+            'نظم المعلومات': { W1: 0.75, W2: 0.25, G1: programming, G2: logicDesign },
+            'هندسة البرمجيات': { W1: 0.5, W2: 0.5, G1: programming, G2: logicDesign }
+        };
+
+        const resultsDiv = document.getElementById('results');
+        resultsDiv.innerHTML = ''; // إعادة تعيين النتائج
+
+        // حساب الـ RATE لكل تخصص
+        for (const [major, { W1, W2, G1, G2 }] of Object.entries(weights)) {
+            const rate = ((gpa * sa) + (G1 * W1) + (G2 * W2)) / 3;
+            const rateElement = document.createElement('div');
+            rateElement.classList.add('rate');
+            rateElement.textContent = `${major}: ${rate.toFixed(3)}`;
+            resultsDiv.appendChild(rateElement);
+        }
+    }
+</script>
+
+</body>
+</html>
